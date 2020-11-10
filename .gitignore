@@ -1,0 +1,8 @@
+# 数据文件
+/HW
+/drkg_source_data
+
+#配置文件
+/__pycache__
+/.idea
+/.vscode
