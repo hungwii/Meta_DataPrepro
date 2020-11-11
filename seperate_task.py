@@ -1,5 +1,6 @@
 import random
 import json
+from check import check_ents
 
 
 def get_all_ent(the_task):
@@ -30,9 +31,9 @@ def seperate_task(filepath_all_tasks, train_rel_num, dev_rel_num, test_rel_num, 
     all_keys = list(all_tasks.keys()) #这里all_keys的长度应该和train，dev的总和相等
     print('len(all_keys):',len(all_keys))
 
-    #seperate the key in the tasks.json
     train_rel = random.sample(all_keys, train_rel_num)
-    dev_rel = random.sample(all_keys, dev_rel_num)
+    dev_rel = list(set(all_keys) - set(train_rel))
+    print('len(train_rel), len()dev_rel', len(train_rel), len(dev_rel))
 
     train_tasks = {}
     for t_ in train_rel:
@@ -41,7 +42,7 @@ def seperate_task(filepath_all_tasks, train_rel_num, dev_rel_num, test_rel_num, 
 
     dev_tasks = {}
     for d_ in dev_rel:
-        dev_tasks[d_] = []
+        # dev_tasks[d_] = []
         dev_tasks[d_] = all_tasks[d_]
 
     test_tasks = predict
@@ -50,11 +51,17 @@ def seperate_task(filepath_all_tasks, train_rel_num, dev_rel_num, test_rel_num, 
     train_all_ents = get_all_ent(train_tasks)
     dev_all_ents = get_all_ent(dev_tasks)
     test_all_ents = get_all_ent(test_tasks)
-    count = len(list(set(test_all_ents) - (set(train_all_ents) | set(dev_all_ents))))
-    print("test - (train U dev) :",count)
+
+    #把在test中但是不在train 和 dev 中的顶点输出出来，方便之后进行处理
+    raw_entities = list(set(test_all_ents) - (set(train_all_ents) | set(dev_all_ents)))
+    count = len(raw_entities)
     if count != 0:
-        print(list(set(test_all_ents) - (set(train_all_ents) | set(dev_all_ents))))
-    input("暂停一下")
+        with open('./HW/ForMe/entities_inTest_notInTrainAndDev.txt', 'w', encoding='utf-8') as output:
+            for row in raw_entities:
+                rowtext = '{}'.format(row)
+                output.write(rowtext)
+                output.write('\n')
+    print('--输出entities_inTest_notInTrainAndDev.txt完成--')
 
     #检查数据的形式
     print('抽取的关系的数量：', len(rel_i_want) )
@@ -62,7 +69,7 @@ def seperate_task(filepath_all_tasks, train_rel_num, dev_rel_num, test_rel_num, 
 
     print('train_task:', type(train_tasks), len(train_tasks))
     print('dev_task:', type(dev_tasks), len(dev_tasks))
-    print('dev_task:', type(test_tasks), len(test_tasks))
+    print('test_task:', type(test_tasks), len(test_tasks))
 
     input('这里暂停一下')
 

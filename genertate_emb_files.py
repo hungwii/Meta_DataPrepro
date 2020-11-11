@@ -47,8 +47,8 @@ def write_rel(output_relation_Emb, rels):
 #我输出的是一个字典，输出的第一列是数字，第二列名称,中间用Tab链接
 def write_ents(output_Embed, ent2ids_list):
     with open(output_Embed, 'w', encoding='utf-8') as emb:
-        for row in ent2ids_list:
-            rowtext = '{}\t{}'.format(row[1], row[0])
+        for idx_ents, row in enumerate(ent2ids_list):
+            rowtext = '{}\t{}'.format(idx_ents, row)
             emb.write(rowtext)
             emb.write('\n')
     print('——entities字典完成——')

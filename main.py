@@ -9,6 +9,7 @@ from generate_rel2candidate_json import get_rel2candidate_json
 from generate_ent2vec import get_ent2vec
 from seperate_task import seperate_task
 from genertate_emb_files import generate_three_tasks, wirte_tasks, write_rel, write_ents
+from check import check_ents
 
 
 

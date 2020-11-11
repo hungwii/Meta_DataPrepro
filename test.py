@@ -1,9 +1,8 @@
-train_all_ents = [1,2,3, 5]
-dev_all_ents = [2,3,4]
-test_all_ents = [1,2,3,4]
-print("train U dev - test:",len(list(set(train_all_ents) | set(dev_all_ents) - set(test_all_ents))))
+from check import check_ents
+a = [1,2,3,4,5]
+b = [2,3,4,5,6]
+c = [4,5,6,7,8]
 
-count = len(list(set(test_all_ents) - (set(train_all_ents) | set(dev_all_ents))))
-print(count, list(set(test_all_ents) - (set(train_all_ents) | set(dev_all_ents))))
-
-     
+check_ents(a, 'a')
+check_ents(b, 'b')
+check_ents(c, 'c')
