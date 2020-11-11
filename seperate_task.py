@@ -5,7 +5,7 @@ import json
 def get_all_ent(the_task):
     result = []
     for _key in the_task.keys():
-        for _triple in _key:
+        for _triple in the_task[_key]:
             result.append(_triple[0])
             result.append(_triple[2])
     return list(set(result))
