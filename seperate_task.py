@@ -87,5 +87,5 @@ def seperate_task(filepath_all_tasks, train_rel_num, dev_rel_num, test_rel_num, 
 
     print("——train.json, dev.json, test.json 文件加载完成——")
 
-    return train_tasks, dev_tasks, test_tasks
+    return all_tasks, all_keys
 

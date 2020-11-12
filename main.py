@@ -8,7 +8,7 @@ from generate_ent2ids import get_ent2ids
 from generate_rel2candidate_json import get_rel2candidate_json
 from generate_ent2vec import get_ent2vec
 from seperate_task import seperate_task
-from genertate_emb_files import generate_three_tasks, wirte_tasks, write_rel, write_ents
+from genertate_emb_files import generate_three_tasks, get_ents,wirte_tasks, write_rel, write_ents
 from check import check_ents
 
 
@@ -117,7 +117,7 @@ print("——task.json文件加载完成——")
 
 #-------call the function to genrate the file that MetaR model need---------
 
-train_task, dev_task, test_task = seperate_task(output_all_tasks, train_rel_num, dev_rel_num, test_rel_num, rel_i_want)
+all_tasks, all_keys = seperate_task(output_all_tasks, train_rel_num, dev_rel_num, test_rel_num, rel_i_want)
 
 get_e12rel_e2(rels, triples, output_e1rel_e2)
 
@@ -127,13 +127,12 @@ ents = get_ent2ids(rels, triples, output_ent2ids, output_ent2ids_Emb)
 
 
 
-#现在拿到了所有需要的数据，调用函数进行映射成数字关系
-train, dev, test = generate_three_tasks(train_task, dev_task, test_task, ents, rels)
+#现在拿到了所有需要的数据，调用函数进行映射成数字关系,后面两个参数ents和rels其实是一个字典，按照在列表之中的顺序进行排序
+train, dev = generate_three_tasks(all_tasks,all_keys, ents, rels)
 
 #---------输出embedding需要的5个文件--------------
 wirte_tasks(output_train_Emb, train)
 wirte_tasks(output_dev_Emb, dev)
-wirte_tasks(output_test_Emb, test)
 write_rel(output_relation_Emb,rels)
 write_ents(output_ent2ids_Emb, ents)
 
