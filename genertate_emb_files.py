@@ -4,7 +4,7 @@ def get_ents(rel_list):
         ents.append(triple[0])
         ents.append(triple[2])
     ents_set = list(set(ents))
-    ents_num = int(len(ents_set) * 0.9)
+    ents_num = int(len(rel_list) * 0.9)
     return  ents_set, ents_num
 
 def map_task(task, entities_dic, relation_dic):
@@ -30,8 +30,9 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
     input('暂停一下检查数据的格式')
 
     train_forEmb, dev_forEmb, rel_ents_set, rel_ents_num = {}, all_tasks, {}, {}
-    for i in all_keys():
+    for i in all_keys:
         rel_ents_set[i], rel_ents_num[i] = get_ents(all_tasks[i])
+        train_forEmb[i] = []
     
     #这个就是分割数据代码的主体
     times = 1 #记录循环的次数
@@ -58,17 +59,17 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
             
             #不管有没有找到，idx都加一，循环继续。
             idx += 1
-        
+        times += 1 #计数器+1
         print('---第{}次循环--{}---'.format(times, rel))
     
     #检查分割的数据的格式：1、首先保证数量是正确的
-    print('train中关系的数量')
-    print('dev中关系的数量')
+    print('train中关系的数量(91)',len(train_forEmb.keys()))
+    print('dev中关系的数量(91)', len(dev_forEmb.keys()))
     input('暂停一下')
     
     for t, _ in enumerate(all_keys):
         print('--{}--{}--'.format(len(train_forEmb[_]), len(dev_forEmb[_])))
-        if t % 10 == 0:
+        if t % 10 == 0 and t != 0:
             input('暂停检查一下数量')
     
     #下面就是检查一下数据的内容
