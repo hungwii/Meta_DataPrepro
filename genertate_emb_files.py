@@ -1,3 +1,5 @@
+import copy
+
 def get_ents(rel_list):
     ents = []
     for triple in rel_list:
@@ -8,12 +10,16 @@ def get_ents(rel_list):
     return  ents_set, ents_num
 
 def map_task(task, entities_dic, relation_dic):
+    print('----下面开始一个数据集的映射')
     train = []
+    count = 0
     for rel in task.keys():
         rel_idx = relation_dic.index(rel)
         for _ in task[rel]:
             temp = [entities_dic.index(_[0]), rel_idx, entities_dic.index(_[2])]
             train.append(temp)
+        count += 1
+        print('--------第{}个关系{}完成'.format(count, rel))
     return train
 
 #TODO：修改这里的函数，最后只输出train和valid
@@ -25,17 +31,22 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
     :entities_dic:一个列表，序号就是对应字典中的标号
     :relation_dic:一个列表，序号就是对应字典中的标号
     '''
-    #首先检查数据的格式
-    print('输入中key的长度为', len(all_keys), len(list(all_tasks.keys())))
-    input('暂停一下检查数据的格式')
-
-    train_forEmb, dev_forEmb, rel_ents_set, rel_ents_num = {}, all_tasks, {}, {}
+    # #首先检查数据的格式
+    # print('输入中key的长度为', len(all_keys), len(list(all_tasks.keys())))
+    # input('暂停一下检查数据的格式')
+    train_forEmb, dev_forEmb, rel_ents_set, rel_ents_num = {}, copy.deepcopy(all_tasks), {}, {}
     for i in all_keys:
         rel_ents_set[i], rel_ents_num[i] = get_ents(all_tasks[i])
         train_forEmb[i] = []
     
+    # for uu in all_keys:
+    #     print(rel_ents_num[uu], len(all_tasks[uu]))
+    
+    # input('hello检查')
     #这个就是分割数据代码的主体
-    times = 1 #记录循环的次数
+    times = 0 #记录循环的次数
+    train_sum = 0
+    dev_sum = 0
     for rel in all_keys:
         count, idx = 0, 0
         cur_ents_set = rel_ents_set[rel]  #获取到当前关系下的顶点集合
@@ -49,6 +60,7 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
                 #一个添加，一个按值删除
                 train_forEmb[rel].append(all_tasks[rel][idx])
                 dev_forEmb[rel].remove(all_tasks[rel][idx]) #删除后，最后剩下的就是我要的dev_forEmb
+                # print('删除后检查，{} {}'.format(len(train_forEmb[rel]), len(dev_forEmb[rel])))
                 count += 1
 
                 #删除查找表中的值
@@ -59,34 +71,47 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
             
             #不管有没有找到，idx都加一，循环继续。
             idx += 1
+        
+        #while循环结束之后，要补充train中不够的数量
+        while count < rel_ents_num[rel]:
+            train_forEmb[rel].append(dev_forEmb[rel][0])
+            dev_forEmb[rel].remove(dev_forEmb[rel][0])
+            count += 1
+        
+        print('整个关系删除后检查，train{}, dev{}, 删除前总和{} 删除后总和 {}'.format(len(train_forEmb[rel]), len(dev_forEmb[rel]), len(all_tasks[rel]), len(train_forEmb[rel])+len(dev_forEmb[rel])))
+        train_sum += len(train_forEmb[rel])
+        dev_sum += len(dev_forEmb[rel])
+            
         times += 1 #计数器+1
         print('---第{}次循环--{}---'.format(times, rel))
     
-    #检查分割的数据的格式：1、首先保证数量是正确的
-    print('train中关系的数量(91)',len(train_forEmb.keys()))
-    print('dev中关系的数量(91)', len(dev_forEmb.keys()))
-    input('暂停一下')
     
-    for t, _ in enumerate(all_keys):
-        print('--{}--{}--'.format(len(train_forEmb[_]), len(dev_forEmb[_])))
-        if t % 10 == 0 and t != 0:
-            input('暂停检查一下数量')
+    # #检查分割的数据的格式：1、首先保证数量是正确的
+    # print('train中关系的数量(91)',len(train_forEmb.keys()))
+    # print('dev中关系的数量(91)', len(dev_forEmb.keys()))
+    # input('暂停一下')
     
-    #下面就是检查一下数据的内容
-    print(train_forEmb[all_keys[0]])
-    print(dev_forEmb[all_keys[0]])
-    input("暂停检查一下内容")
-
+    # for t, _ in enumerate(all_keys):
+    #     print('--{}--{}--'.format(len(train_forEmb[_]), len(dev_forEmb[_])))
+    #     if t % 10 == 0 and t != 0:
+    #         input('暂停检查一下数量')
+    
+    print('进行映射前的数据检查')
+    print('训练集中三元组的数量：', train_sum)
+    print('测试集中三元组的数量', dev_sum)
+    print('训练加测试中三元组数量的总和：', train_sum + dev_sum)
+    print('开始字典映射')
     #把字典映射
     train = map_task(train_forEmb, entities_dic, relation_dic)
     dev = map_task(dev_forEmb, entities_dic, relation_dic)
-
+    print('映射完成')
 
     #这里输出的train，dev和test的格式：[[1,2,3], [2,3,4]....]
     return train, dev
 
 #这个函数是用来把train/dev/test数据写到ForEmb文件夹中的    
 def wirte_tasks(output_train_Emb, train):
+    print('--开始写文件')
     with open(output_train_Emb, 'w', encoding='utf-8') as output:
         for row in train:
             rowtext = '{}\t{}\t{}'.format(row[0], row[1], row[2])

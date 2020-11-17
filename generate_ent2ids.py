@@ -12,7 +12,8 @@ def get_ent2ids(rels, triples, output, output_Embed):
 
     for triple in triples:
         count += 1
-        print(count)
+        if count % 10000 == 4261:
+            print(count)
         if triple[1] in rels:
             if triple[0] not in ent:
                 ent.append(triple[0])
