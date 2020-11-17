@@ -1,6 +1,6 @@
 import random
 import json
-from check import check_ents
+from check import check_triples
 
 
 def get_all_ent(the_task):
@@ -87,5 +87,18 @@ def seperate_task(filepath_all_tasks, train_rel_num, dev_rel_num, test_rel_num, 
 
     print("——train.json, dev.json, test.json 文件加载完成——")
 
-    return all_tasks, all_keys
+    check_triples(train_tasks,'train_tasks')
+    check_triples(dev_tasks, 'dev_tasks')
+    check_triples(test_tasks,'test_tasks')
+    input('暂停一下计算tran+dev的数量，以及计算总数是不是一样')
+    #TODO:这需要输出train+dev,而不是全部，同时顺便检查trian + dev和test各自的顶点数量
+    train_dev_tasks = {**train_tasks, **dev_tasks}
+    check_triples(train_dev_tasks, 'train_dev_task')
+    input('暂停检查')
+
+    train_dev_keys = []
+    for k in train_dev_tasks:
+        train_dev_keys.append(k)
+
+    return train_dev_tasks, train_dev_keys
 

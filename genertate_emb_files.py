@@ -1,4 +1,6 @@
 import copy
+from check import check_triples
+
 
 def get_ents(rel_list):
     ents = []
@@ -31,9 +33,12 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
     :entities_dic:一个列表，序号就是对应字典中的标号
     :relation_dic:一个列表，序号就是对应字典中的标号
     '''
+    #TODO:这里做错了，我是把所有数据都拿来分成train和dev了。应该先去除掉test
+    #TODO:分割之前先检查一个数据量
     # #首先检查数据的格式
-    # print('输入中key的长度为', len(all_keys), len(list(all_tasks.keys())))
-    # input('暂停一下检查数据的格式')
+    print('输入中key的长度为', len(all_keys), len(list(all_tasks.keys())))
+    check_triples(all_tasks, 'train_dev的三元组个数和边的个数')
+    input('暂停一下检查数据的格式')
     train_forEmb, dev_forEmb, rel_ents_set, rel_ents_num = {}, copy.deepcopy(all_tasks), {}, {}
     for i in all_keys:
         rel_ents_set[i], rel_ents_num[i] = get_ents(all_tasks[i])
@@ -100,6 +105,7 @@ def generate_three_tasks(all_tasks, all_keys, entities_dic, relation_dic):
     print('训练集中三元组的数量：', train_sum)
     print('测试集中三元组的数量', dev_sum)
     print('训练加测试中三元组数量的总和：', train_sum + dev_sum)
+    print('映射前检查')
     print('开始字典映射')
     #把字典映射
     train = map_task(train_forEmb, entities_dic, relation_dic)
