@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
-#TODO:这个生成embedding的代码需要重新改过
+#TODO:这个生成embedding的代码需要重新改过.从别的服务器的npy文件穿过来后，直接进行操作
+
 def get_ent2vec(ent, embedding_vec, embedding_dic):
     #读取tsv文件，获取ent中所有节点的数字，把这数字保存为列表的形式
-    #embedding——vec文件的数据格式就是一行行的向量，按照字典的顺序排列
+    #embedding_vec文件的数据格式就是一行行的向量，按照字典的顺序排列
 
     all_entities = []
     with open(embedding_dic, 'r', encoding='utf-8') as f:
