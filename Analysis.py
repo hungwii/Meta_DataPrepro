@@ -19,15 +19,13 @@ def draw_one(filepath,score_col=3, label_col=4):
 
     result_0_score = single_column(filepath, col_num=score_col)
     result_0_label = single_column(filepath,col_num=label_col)
-    print(result_0_score[:20])
-    print(result_0_label[:20])
-    input('暂停检查一下数据')
+
     all_score_0 = list(map(float, result_0_score))
     all_label_0 = list(map(int, result_0_label))
-    long_0 = sum(all_label_0)
 
-    score_0=all_score_0[:5*long_0]
-    label_0=all_label_0[:5*long_0]
+    #TODO：combine
+
+
     return score_0, label_0
 
 filepath_0 = file_class + 'new_result_0.txt'
