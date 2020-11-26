@@ -26,12 +26,16 @@ def draw_one(filepath,score_col=3, label_col=4):
     zipped = zip(all_score_0, all_label_0)
     # sort_zipped = sorted(zipped,key=lambda x:(x[1],x[0]))
 # 先按 x[1] 进行排序，若 x[1] 相同，再按照 x[0] 排序
-    combine_zip = sorted(zipped, key=lambda x : (x[1], x[0]))
+    combine_zip = sorted(zipped, key=lambda x : (x[1], x[0]),reverse=True)
     combine = zip(*combine_zip)
     all_score_0_new, all_label_0_new = [list(x) for x in combine]
     
-    score_0 = all_score_0_new[:2*long_0]
-    label_0 = all_label_0_new[:2*long_0]
+    score_0 = all_score_0_new[:3*long_0]
+    label_0 = all_label_0_new[:3*long_0]
+    
+    print(score_0[:10])
+    print(label_0[:10])
+    input('stop')
     return score_0, label_0
 
 filepath_0 = file_class + 'new_result_0.txt'
