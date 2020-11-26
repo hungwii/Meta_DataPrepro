@@ -22,10 +22,16 @@ def draw_one(filepath,score_col=3, label_col=4):
 
     all_score_0 = list(map(float, result_0_score))
     all_label_0 = list(map(int, result_0_label))
-
-    #TODO：combine
-
-
+    long_0 = sum(all_label_0)
+    zipped = zip(all_score_0, all_label_0)
+    # sort_zipped = sorted(zipped,key=lambda x:(x[1],x[0]))
+# 先按 x[1] 进行排序，若 x[1] 相同，再按照 x[0] 排序
+    combine_zip = sorted(zipped, key=lambda x : (x[1], x[0]))
+    combine = zip(*combine_zip)
+    all_score_0_new, all_label_0_new = [list(x) for x in combine]
+    
+    score_0 = all_score_0_new[:2*long_0]
+    label_0 = all_label_0_new[:2*long_0]
     return score_0, label_0
 
 filepath_0 = file_class + 'new_result_0.txt'
