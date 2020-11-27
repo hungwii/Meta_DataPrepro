@@ -11,32 +11,47 @@ from extract import single_column
 #-------------------------参数设置---------------------------
 file_class = '../MetaR/test_result/TransR3000_30shot_test/' #数据所在的文件夹路径
 file_num = 6 #这个数量是我test文件的数量，相当于要预测的任务的数量
-filepath_output = './test_result_graph/TransR3000_30shot.pdf'
+filepath_output = './test_result_graphs/TransR3000_30shot.pdf'
 #-----------------------------------------------------------
+def normalization(socres_list):
+    #min-max标准化
+    max_num = max(socres_list)
+    min_num = min(socres_list)
+    rst = []
+    for score in socres_list:
+        rst.append((score - min_num)/(max_num-min_num))
+    return rst
+
 def draw_one(filepath,score_col=3, label_col=4):
-    #TODO:不知道负数的分数有没有什么影响，可以先做做看,可以用一个sigmoid
-    #TODO：计算auc要把所有的1给单独抽出来。不可以像现在这样取top
 
-    result_0_score = single_column(filepath, col_num=score_col)
-    result_0_label = single_column(filepath,col_num=label_col)
+    result_score = single_column(filepath, col_num=score_col)
+    result_label = single_column(filepath,col_num=label_col)
 
-    all_score_0 = list(map(float, result_0_score))
-    all_label_0 = list(map(int, result_0_label))
-    long_0 = sum(all_label_0)
-    zipped = zip(all_score_0, all_label_0)
-    # sort_zipped = sorted(zipped,key=lambda x:(x[1],x[0]))
-# 先按 x[1] 进行排序，若 x[1] 相同，再按照 x[0] 排序
+    all_score = list(map(float, result_score))
+    all_label = list(map(int, result_label)) 
+
+    #进行归一化
+    all_score = normalization(all_score)
+
+    long_ = sum(all_label)
+    zipped = zip(all_score, all_label)
+
+    # 先按 x[1] 进行排序，若 x[1] 相同，再按照 x[0] 排序
     combine_zip = sorted(zipped, key=lambda x : (x[1], x[0]),reverse=True)
     combine = zip(*combine_zip)
-    all_score_0_new, all_label_0_new = [list(x) for x in combine]
+    all_score_new, all_label_new = [list(x) for x in combine]
     
-    score_0 = all_score_0_new[:3*long_0]
-    label_0 = all_label_0_new[:3*long_0]
+    score = all_score_new[:4*long_]
+    label = all_label_new[:4*long_]
     
-    print(score_0[:10])
-    print(label_0[:10])
-    input('stop')
-    return score_0, label_0
+    # with open('./hello.txt', 'w', encoding='utf-8') as output:
+    #     for row in range(len(score)):
+    #         rowtext = '{} {}'.format(score[row], label[row])
+    #         output.write(rowtext)
+    #         output.write('\n')
+    
+    # input('stop')
+    return score, label
 
 filepath_0 = file_class + 'new_result_0.txt'
 filepath_1 = file_class + 'new_result_1.txt'
@@ -53,6 +68,13 @@ score_2, label_2 = draw_one(filepath_2)
 score_3, label_3 = draw_one(filepath_3,score_col=4, label_col=5)
 score_4, label_4 = draw_one(filepath_4,score_col=4, label_col=5)
 score_5, label_5 = draw_one(filepath_5,score_col=4, label_col=5)
+
+
+
+
+
+
+
 #调包计算画图必要的数据
 fpr_0, tpr_0, threshold_0 = roc_curve(label_0, score_0)
 fpr_1, tpr_1, threshold_1 = roc_curve(label_1, score_1)
