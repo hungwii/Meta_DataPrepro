@@ -85,7 +85,6 @@ precision_3, recall_3, threshold_3 = precision_recall_curve(label_3, score_3)
 precision_4, recall_4, threshold_4 = precision_recall_curve(label_4, score_4)
 precision_5, recall_5, threshold_5 = precision_recall_curve(label_5, score_5)
 
-#TODO看下sklearn中的aupr是这样调包算的吗
 #计算auc
 auprc_0 = auc(recall_0,precision_0)
 auprc_1 = auc(recall_1,precision_1)
