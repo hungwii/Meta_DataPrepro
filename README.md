@@ -9,4 +9,4 @@
 
 ## 结果分析
 
-需要分别调用```Analysis_auc.py```和```Analysis_pr.py1```
+需要分别调用```Analysis_auc.py```和```Analysis_pr.py```
