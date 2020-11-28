@@ -115,7 +115,7 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 # plt.title('Roc Curve')
 plt.legend(loc="lower right")
-plt.savefig(filepath_output + 'figure.pdf', dpi=1200, format='pdf')
+plt.savefig(filepath_output + 'figure_auc.pdf', dpi=1200, format='pdf')
 plt.show()
 
 print('end')
