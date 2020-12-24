@@ -1,8 +1,9 @@
 import numpy as np
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import json
-
+#这个文件调用，可以用来画整个知识图谱的所有点
 
 #从数据文件中载入数据
 data_emb = np.load('./HW/embedding/transR-3000.npy')
@@ -57,12 +58,12 @@ def plot_embedding(data, label, title):
     x_min, x_max = np.min(data, 0), np.max(data, 0)
     data = (data - x_min) / (x_max - x_min)		# 对数据进行归一化处理
     fig = plt.figure()		# 创建图形实例
-    ax = plt.subplot(111)		# 创建子图
-    # 遍历所有样本
+    # ax = plt.subplot(111)		# 创建子图
+
+    #遍历所有样本画图
     for i in range(data.shape[0]):
         # 在图中为每个数据点画出标签
-        plt.text(data[i, 0], data[i, 1], str(label[i]), color=plt.cm.Set1(label[i] / 1),
-                 fontdict={'weight': 'bold', 'size': 7})
+        plt.text(data[i, 0], data[i, 1], str(label[i]), color=plt.cm.Set1(label[i] + 2),fontdict={'weight': 'bold', 'size': 7})
     plt.xticks()		# 指定坐标的刻度
     plt.yticks()
     plt.title(title, fontsize=14)
@@ -76,7 +77,7 @@ def plot_embedding(data, label, title):
 
 print('Starting compute t-SNE Embedding...')
 #设置好参数
-ts = TSNE(n_components=2, init='pca', random_state=0)
+ts = TSNE(n_components=2, init='pca', random_state=0, perplexity=50)
 # t-SNE降维
 reslut = ts.fit_transform(data_emb)
 print('下面开始画图')

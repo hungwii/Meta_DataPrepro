@@ -11,4 +11,4 @@
 
 需要分别调用```Analysis_auc.py```和```Analysis_pr.py```
 
-T-SNE可视化分析，调用```t_sne.py```
+T-SNE可视化分析，调用```t_sne_all.py``` 或```t_sne_partial```
